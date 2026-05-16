@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-05-16T09:38:38.086975+00:00",
+  "timestamp": "2026-05-16T14:43:14.884825+00:00",
   "commit_sha": "99fc29d256a900156f099606056b8b0c13161774",
   "run_id": "25957207185",
   "results": [
@@ -8,7 +8,7 @@
       "framework": "sglang",
       "model": "black-forest-labs/FLUX.1-dev",
       "task": "text-to-image",
-      "latency_s": 6.634,
+      "latency_s": 6.672,
       "error": null
     },
     {
@@ -16,7 +16,7 @@
       "framework": "sglang",
       "model": "black-forest-labs/FLUX.2-dev",
       "task": "text-to-image",
-      "latency_s": 22.65,
+      "latency_s": 22.775,
       "error": null
     },
     {
@@ -24,7 +24,7 @@
       "framework": "sglang",
       "model": "Qwen/Qwen-Image-2512",
       "task": "text-to-image",
-      "latency_s": 12.792,
+      "latency_s": 12.899,
       "error": null
     },
     {
@@ -32,7 +32,7 @@
       "framework": "sglang",
       "model": "Qwen/Qwen-Image-Edit-2511",
       "task": "image-edit",
-      "latency_s": 23.86,
+      "latency_s": 24.052,
       "error": null
     },
     {
@@ -40,7 +40,7 @@
       "framework": "sglang",
       "model": "Tongyi-MAI/Z-Image-Turbo",
       "task": "text-to-image",
-      "latency_s": 1.002,
+      "latency_s": 0.942,
       "error": null
     },
     {
@@ -48,7 +48,7 @@
       "framework": "sglang",
       "model": "Wan-AI/Wan2.2-T2V-A14B-Diffusers",
       "task": "text-to-video",
-      "latency_s": 215.694,
+      "latency_s": 215.925,
       "error": null
     },
     {
@@ -56,7 +56,7 @@
       "framework": "sglang",
       "model": "Wan-AI/Wan2.2-TI2V-5B-Diffusers",
       "task": "text-image-to-video",
-      "latency_s": 59.159,
+      "latency_s": 59.17,
       "error": null
     },
     {
@@ -64,7 +64,7 @@
       "framework": "sglang",
       "model": "Lightricks/LTX-2",
       "task": "text-to-video",
-      "latency_s": 8.564,
+      "latency_s": 8.493,
       "error": null
     },
     {
@@ -80,7 +80,7 @@
       "framework": "sglang",
       "model": "Wan-AI/Wan2.2-I2V-A14B-Diffusers",
       "task": "image-to-video",
-      "latency_s": 212.627,
+      "latency_s": 211.622,
       "error": null
     }
   ]
