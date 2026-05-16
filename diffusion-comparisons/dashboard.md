@@ -1,21 +1,27 @@
 # Diffusion Cross-Framework Performance Dashboard
 
-*Generated: May 08 | Commit: `3c3f0bd`*
+*Generated: May 16 | Commit: `99fc29d`*
+
+> [!WARNING]
+> **Performance Regression Detected**
+>
+> - **zimage_turbo_t2i_1024** (sglang): 0.93s -> 1.00s (+7.7%)
+
 
 ## Cross-Framework Performance Comparison
 
 | Model | Risk | sglang (s) |
 |-------|------|---------|
-| FLUX.1-dev | ✅ | **6.60** |
-| FLUX.2-dev | ✅ | **22.60** |
-| Qwen-Image-2512 | ✅ | **12.72** |
-| Qwen-Image-Edit-2511 | ✅ | **23.85** |
-| Z-Image-Turbo | ✅ | **0.93** |
-| Wan2.2-T2V-A14B-Diffusers | ✅ | **211.58** |
-| Wan2.2-TI2V-5B-Diffusers | ✅ | **59.20** |
-| LTX-2 | ❌ | N/A |
+| FLUX.1-dev | ✅ | **6.63** |
+| FLUX.2-dev | ✅ | **22.65** |
+| Qwen-Image-2512 | ✅ | **12.79** |
+| Qwen-Image-Edit-2511 | ✅ | **23.86** |
+| Z-Image-Turbo | ⚠️ | **1.00** |
+| Wan2.2-T2V-A14B-Diffusers | ✅ | **215.69** |
+| Wan2.2-TI2V-5B-Diffusers | ✅ | **59.16** |
+| LTX-2 | ✅ | **8.56** |
 | LTX-2.3 | ❌ | N/A |
-| Wan2.2-I2V-A14B-Diffusers | ✅ | **207.62** |
+| Wan2.2-I2V-A14B-Diffusers | ✅ | **212.63** |
 
 ### Latency Trend: flux1_dev_t2i_1024
 
@@ -71,6 +77,7 @@
 
 | Date | Commit | flux1_dev_t2i_1024 (s) | flux2_dev_t2i_1024 (s) | qwen_image_2512_t2i_1024 (s) | qwen_image_edit_2511 (s) | zimage_turbo_t2i_1024 (s) | wan22_t2v_a14b_720p (s) | wan22_ti2v_5b_720p (s) | ltx2_twostage_t2v (s) | ltx2.3_twostage_ti2v_2gpus (s) | wan22_i2v_a14b_720p (s) | Trend |
 |------|--------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|-------|
+| May 16 | `99fc29d` | 6.63 | 22.65 | 12.79 | 23.86 | 1.00 | 215.69 | 59.16 | 8.56 | N/A | 212.63 | :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :arrow_up:  :left_right_arrow:  :left_right_arrow:    :arrow_up: |
 | May 08 | `3c3f0bd` | 6.60 | 22.60 | 12.72 | 23.85 | 0.93 | 211.58 | 59.20 | N/A | N/A | 207.62 | :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:   :left_right_arrow:    :left_right_arrow: |
 | May 06 | `b91b05a` | 6.68 | 22.79 | 12.90 | 24.08 | 0.93 | N/A | 59.21 | 11.00 | 40.14 | 208.67 | :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:   :left_right_arrow:  :arrow_down:  :left_right_arrow:  :left_right_arrow: |
 | May 04 | `c611a3f` | 6.63 | 22.62 | 13.07 | 23.91 | 0.91 | 210.23 | 59.17 | 11.72 | 40.12 | 205.57 | :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :arrow_up:  :left_right_arrow:  :left_right_arrow:  :arrow_down:  :arrow_down:  :arrow_down: |
@@ -84,14 +91,13 @@
 | Apr 24 | `c016635` | 6.71 | 22.81 | 13.77 | 23.83 | 0.89 | 211.38 | 62.22 | 16.09 | 69.23 | 209.67 | :left_right_arrow:  :left_right_arrow:  :arrow_up:  :left_right_arrow:  :left_right_arrow:    :arrow_down:  :arrow_up:  |
 | Apr 23 | `c689f77` | 6.60 | 22.62 | 13.03 | 23.68 | 0.88 | N/A | N/A | 16.75 | 58.19 | N/A | :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:    :arrow_up:  :arrow_down:  |
 | Apr 18 | `9c47bba` | 6.68 | 22.82 | 13.13 | 23.78 | 0.89 | 210.45 | 62.17 | 15.32 | 60.19 | 206.66 | :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :arrow_down:  :left_right_arrow: |
-| Apr 17 | `3d2d57c` | 6.69 | 22.82 | 13.12 | 23.80 | 0.89 | 210.28 | 62.19 | 15.47 | 62.20 | 205.63 | :left_right_arrow:  :left_right_arrow:  :arrow_down:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :arrow_up:  :arrow_up:  :left_right_arrow: |
-| Apr 16 | `a4cf2ea` | 6.70 | 22.90 | 14.08 | 23.93 | 0.89 | 210.73 | 62.15 | 14.86 | 59.20 | 206.60 | -- |
+| Apr 17 | `3d2d57c` | 6.69 | 22.82 | 13.12 | 23.80 | 0.89 | 210.28 | 62.19 | 15.47 | 62.20 | 205.63 | -- |
 
 > [!CAUTION]
 > **Action Required — Performance Alert**
 >
 > The following cases need attention:
-> - ltx2_twostage_t2v: SGLang latency is N/A (broken)
+> - zimage_turbo_t2i_1024: SGLang regression +8.4% vs 3-run avg (1.00s vs 0.92s)
 > - ltx2.3_twostage_ti2v_2gpus: SGLang latency is N/A (broken)
 
 
