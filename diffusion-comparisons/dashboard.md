@@ -1,22 +1,28 @@
 # SGLang-Diffusion Nightly Performance Dashboard
 
-*Generated: Jun 27 | Commit: `a526ca2`*
+*Generated: Jun 27 | Commit: `b78e95c`*
+
+> [!WARNING]
+> **Performance Regression Detected**
+>
+> - **ltx2.3_twostage_ti2v_2gpus** (sglang): 15.05s -> 16.06s (+6.7%)
+
 
 ## SGLang-Diffusion Performance
 
 | Model | Risk | sglang (s) |
 |-------|------|---------|
-| FLUX.1-dev | ❌ | N/A |
-| FLUX.2-dev | ❌ | N/A |
-| Qwen-Image-2512 | ❌ | N/A |
-| Qwen-Image-Edit-2511 | ❌ | N/A |
-| Z-Image-Turbo | ❌ | N/A |
-| Wan2.2-T2V-A14B-Diffusers | ✅ | **209.33** |
-| Wan2.2-TI2V-5B-Diffusers | ✅ | **65.19** |
-| LTX-2.3 | ✅ | **15.05** |
-| ideogram-4-fp8 | ❌ | N/A |
-| Cosmos3-Super | ✅ | **113.74** |
-| Wan2.2-I2V-A14B-Diffusers | ✅ | **204.61** |
+| FLUX.1-dev | ✅ | **4.68** |
+| FLUX.2-dev | ✅ | **14.31** |
+| Qwen-Image-2512 | ✅ | **12.81** |
+| Qwen-Image-Edit-2511 | ✅ | **23.77** |
+| Z-Image-Turbo | ✅ | **0.65** |
+| Wan2.2-T2V-A14B-Diffusers | ✅ | **209.17** |
+| Wan2.2-TI2V-5B-Diffusers | ✅ | **65.22** |
+| LTX-2.3 | ⚠️ | **16.06** |
+| ideogram-4-fp8 | ✅ | **5.19** |
+| Cosmos3-Super | ✅ | **113.80** |
+| Wan2.2-I2V-A14B-Diffusers | ✅ | **204.59** |
 
 ### Latency Trend: flux1_dev_t2i_1024
 
@@ -58,6 +64,11 @@
 ![Latency Trend ltx2.3_twostage_ti2v_2gpus](https://raw.githubusercontent.com/sgl-project/ci-data/main/diffusion-comparisons/charts/latency_ltx2.3_twostage_ti2v_2gpus.png)
 
 
+### Latency Trend: ideogram4_fp8_t2i_2gpu
+
+![Latency Trend ideogram4_fp8_t2i_2gpu](https://raw.githubusercontent.com/sgl-project/ci-data/main/diffusion-comparisons/charts/latency_ideogram4_fp8_t2i_2gpu.png)
+
+
 ### Latency Trend: cosmos3_super_t2v_2gpu
 
 ![Latency Trend cosmos3_super_t2v_2gpu](https://raw.githubusercontent.com/sgl-project/ci-data/main/diffusion-comparisons/charts/latency_cosmos3_super_t2v_2gpu.png)
@@ -68,12 +79,14 @@
 ![Latency Trend wan22_i2v_a14b_720p](https://raw.githubusercontent.com/sgl-project/ci-data/main/diffusion-comparisons/charts/latency_wan22_i2v_a14b_720p.png)
 
 
-## SGLang Performance Trend (Last 29 Runs)
+## SGLang Performance Trend (Last 30 Runs)
 
 | Date | Commit | flux1_dev_t2i_1024 (s) | flux2_dev_t2i_1024 (s) | qwen_image_2512_t2i_1024 (s) | qwen_image_edit_2511 (s) | zimage_turbo_t2i_1024 (s) | wan22_t2v_a14b_720p (s) | wan22_ti2v_5b_720p (s) | ltx2.3_twostage_ti2v_2gpus (s) | ideogram4_fp8_t2i_2gpu (s) | cosmos3_super_t2v_2gpu (s) | wan22_i2v_a14b_720p (s) | Trend |
 |------|--------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|-------|
+| Jun 27 | `b78e95c` | 4.68 | 14.31 | 12.81 | 23.77 | 0.65 | 209.17 | 65.22 | 16.06 | 5.19 | 113.80 | 204.59 |      :left_right_arrow:  :left_right_arrow:  :arrow_up:   :left_right_arrow:  :left_right_arrow: |
 | Jun 27 | `a526ca2` | N/A | N/A | N/A | N/A | N/A | 209.33 | 65.19 | 15.05 | N/A | 113.74 | 204.61 |      :left_right_arrow:  :left_right_arrow:  :left_right_arrow:    |
-| Jun 27 | `13b5bd9` | 4.68 | 14.31 | 12.79 | 23.65 | 0.65 | 209.32 | 64.20 | 15.05 | N/A | N/A | N/A | :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:    |
+| Jun 27 | `13b5bd9` | 4.68 | 14.31 | 12.79 | 23.65 | 0.65 | 209.32 | 64.20 | 15.05 | N/A | N/A | N/A | :left_right_arrow:  :arrow_down:  :left_right_arrow:  :left_right_arrow:  :arrow_down:  :left_right_arrow:  :left_right_arrow:  :arrow_up:    |
+| Jun 26 | `781537b` | 4.63 | 15.76 | 12.69 | 23.60 | 0.82 | 208.96 | 64.24 | 14.05 | N/A | N/A | 205.62 | :left_right_arrow:  :arrow_up:  :left_right_arrow:  :left_right_arrow:  :arrow_up:  :left_right_arrow:  :left_right_arrow:  :arrow_down:    :left_right_arrow: |
 | Jun 25 | `7002a37` | 4.68 | 14.32 | 12.75 | 23.62 | 0.66 | 209.34 | 64.22 | 15.06 | N/A | N/A | 204.64 | :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :arrow_up:  :left_right_arrow:  :left_right_arrow:  :arrow_up:    :left_right_arrow: |
 | Jun 24 | `5e6d7c1` | 4.68 | 14.36 | 12.82 | 23.75 | 0.64 | 209.73 | 65.22 | 14.06 | N/A | N/A | 205.65 | :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:    :left_right_arrow: |
 | Jun 23 | `7e6587c` | 4.68 | 14.35 | 12.84 | 23.79 | 0.64 | 209.91 | 65.20 | 14.05 | N/A | N/A | 205.65 | :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:    :left_right_arrow: |
@@ -99,19 +112,13 @@
 | Jun 06 | `b3e4c20` | 7.11 | 24.64 | 12.83 | 23.78 | 0.92 | 212.35 | 65.23 | 31.11 | N/A | N/A | 207.70 | :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :arrow_up:    :left_right_arrow: |
 | Jun 05 | `5af02c1` | 7.12 | 24.59 | 12.81 | 23.77 | 0.90 | 212.94 | 65.18 | 17.06 | N/A | N/A | 208.67 | :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :arrow_down:    :left_right_arrow: |
 | Jun 04 | `14ed9b4` | 7.03 | 24.53 | 12.73 | 23.56 | 0.90 | 212.01 | 64.21 | 18.07 | N/A | N/A | 207.65 | :left_right_arrow:  :arrow_down:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :arrow_down:    :left_right_arrow: |
-| Jun 03 | `83bc776` | 7.06 | 25.15 | 12.73 | 23.57 | 0.90 | 212.26 | 64.20 | 21.08 | N/A | N/A | 207.65 | :left_right_arrow:  :arrow_up:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :left_right_arrow:  :arrow_down:    :left_right_arrow: |
-| Jun 01 | `373cadc` | 7.04 | 24.59 | 12.74 | 23.65 | 0.90 | 212.46 | 64.16 | 23.08 | N/A | N/A | 207.52 | -- |
+| Jun 03 | `83bc776` | 7.06 | 25.15 | 12.73 | 23.57 | 0.90 | 212.26 | 64.20 | 21.08 | N/A | N/A | 207.65 | -- |
 
 > [!CAUTION]
 > **Action Required — Performance Alert**
 >
 > The following cases need attention:
-> - flux1_dev_t2i_1024: SGLang latency is N/A (broken)
-> - flux2_dev_t2i_1024: SGLang latency is N/A (broken)
-> - qwen_image_2512_t2i_1024: SGLang latency is N/A (broken)
-> - qwen_image_edit_2511: SGLang latency is N/A (broken)
-> - zimage_turbo_t2i_1024: SGLang latency is N/A (broken)
-> - ideogram4_fp8_t2i_2gpu: SGLang latency is N/A (broken)
+> - ltx2.3_twostage_ti2v_2gpus: SGLang regression +9.1% vs 3-run avg (16.06s vs 14.72s)
 
 
 ---
