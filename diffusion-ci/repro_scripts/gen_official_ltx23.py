@@ -28,6 +28,7 @@ from ltx_core.model.video_vae import TilingConfig, get_video_chunks_number
 from ltx_core.quantization import QuantizationPolicy
 from ltx_pipelines.ti2vid_one_stage import TI2VidOneStagePipeline
 from ltx_pipelines.ti2vid_two_stages import TI2VidTwoStagesPipeline
+from ltx_pipelines.ti2vid_two_stages_hq import TI2VidTwoStagesHQPipeline
 from ltx_pipelines.utils.args import ImageConditioningInput
 from ltx_pipelines.utils.constants import DEFAULT_NEGATIVE_PROMPT
 from ltx_pipelines.utils.helpers import modality_from_latent_state
@@ -137,6 +138,27 @@ AUDIO_GUIDER = MultiModalGuiderParams(
     skip_step=0,
     stg_blocks=[28],
 )
+HQ_VIDEO_GUIDER = MultiModalGuiderParams(
+    cfg_scale=3.0,
+    stg_scale=0.0,
+    rescale_scale=0.45,
+    modality_scale=3.0,
+    skip_step=0,
+    stg_blocks=[],
+)
+HQ_AUDIO_GUIDER = MultiModalGuiderParams(
+    cfg_scale=7.0,
+    stg_scale=0.0,
+    rescale_scale=1.0,
+    modality_scale=3.0,
+    skip_step=0,
+    stg_blocks=[],
+)
+HQ_HEIGHT = 1088
+HQ_WIDTH = 1920
+HQ_STEPS = 15
+HQ_DISTILLED_LORA_STRENGTH_STAGE_1 = 0.25
+HQ_DISTILLED_LORA_STRENGTH_STAGE_2 = 0.5
 
 
 def sequential_guided_denoise(
@@ -311,12 +333,14 @@ def ci_key_frames(frames: list[np.ndarray], fps: int) -> list[np.ndarray]:
         os.unlink(tmp_path)
 
 
-def save_case(case_id: str, frames: list[np.ndarray], fps: int) -> list[str]:
+def save_case(
+    case_id: str, frames: list[np.ndarray], fps: int, *, num_gpus: int = 2
+) -> list[str]:
     selected = ci_key_frames(frames, fps)
     saved: list[str] = []
     for frame, filename in zip(
         selected,
-        _consistency_gt_filenames(case_id, 2, is_video=True),
+        _consistency_gt_filenames(case_id, num_gpus, is_video=True),
         strict=True,
     ):
         Image.fromarray(frame).save(OUT_DIR / filename)
@@ -444,6 +468,79 @@ def main() -> None:
             manifest["failures"].append(
                 {
                     "case_id": "ltx_2.3_two_stage_t2v_2gpus",
+                    "error_type": type(exc).__name__,
+                    "error": str(exc),
+                    "traceback": traceback.format_exc(),
+                    "cuda_memory": cuda_memory_snapshot(device),
+                }
+            )
+            cleanup_cuda()
+
+    if "ltx_2_3_hq_pipeline" in args.case_ids:
+        try:
+            if torch.cuda.is_available():
+                torch.cuda.reset_peak_memory_stats()
+            print("[ltx-official] generating ltx_2_3_hq_pipeline", flush=True)
+            pipe = TI2VidTwoStagesHQPipeline(
+                checkpoint_path=checkpoint_path,
+                distilled_lora=[
+                    LoraPathStrengthAndSDOps(
+                        distilled_lora_path,
+                        HQ_DISTILLED_LORA_STRENGTH_STAGE_2,
+                        LTXV_LORA_COMFY_RENAMING_MAP,
+                    )
+                ],
+                distilled_lora_strength_stage_1=HQ_DISTILLED_LORA_STRENGTH_STAGE_1,
+                distilled_lora_strength_stage_2=HQ_DISTILLED_LORA_STRENGTH_STAGE_2,
+                spatial_upsampler_path=upsampler_path,
+                gemma_root=gemma_root,
+                loras=[],
+                device=device,
+                quantization=quantization,
+            )
+            if not args.decode_audio:
+                pipe.audio_decoder = NoopAudioDecoder()
+            tiling_config = TilingConfig.default()
+            video, _audio = pipe(
+                prompt="A curious raccoon",
+                negative_prompt=DEFAULT_NEGATIVE_PROMPT,
+                seed=42,
+                height=HQ_HEIGHT,
+                width=HQ_WIDTH,
+                num_frames=args.num_frames,
+                frame_rate=args.fps,
+                num_inference_steps=HQ_STEPS,
+                video_guider_params=HQ_VIDEO_GUIDER,
+                audio_guider_params=HQ_AUDIO_GUIDER,
+                images=[],
+                tiling_config=tiling_config,
+                max_batch_size=1,
+            )
+            frames = collect_video_frames(video)
+            saved = save_case(
+                "ltx_2_3_hq_pipeline", frames, fps=args.fps, num_gpus=1
+            )
+            manifest["cases"].append(
+                {
+                    "case_id": "ltx_2_3_hq_pipeline",
+                    "pipeline_class": "TI2VidTwoStagesHQPipeline",
+                    "saved_files": saved,
+                    "num_frames": len(frames),
+                    "video_chunks_number": get_video_chunks_number(
+                        args.num_frames, tiling_config
+                    ),
+                    "height": HQ_HEIGHT,
+                    "width": HQ_WIDTH,
+                    "num_inference_steps": HQ_STEPS,
+                    "cuda_memory": cuda_memory_snapshot(device),
+                }
+            )
+            del pipe, video, _audio, frames
+            cleanup_cuda()
+        except Exception as exc:
+            manifest["failures"].append(
+                {
+                    "case_id": "ltx_2_3_hq_pipeline",
                     "error_type": type(exc).__name__,
                     "error": str(exc),
                     "traceback": traceback.format_exc(),

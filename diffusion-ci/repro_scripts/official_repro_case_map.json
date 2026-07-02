@@ -170,6 +170,17 @@
       "latest_verified_artifact_dir": "/tmp/mmgen-official-ltx23-denoiser-default-report"
     },
     {
+      "case_id": "ltx_2_3_hq_pipeline",
+      "report_status": "official_comparable",
+      "is_official_comparable": true,
+      "repro_script": "gen_official_ltx23.py",
+      "wrapper": "run_official_ltx23.sh",
+      "official_source": "LTX official ltx-pipelines repository with official 22B checkpoint",
+      "artifact_dir_used_in_report": "/tmp/mmgen-official-ltx23-hq-report",
+      "notes": "Official HQ two-stage pipeline from Lightricks/LTX-2 commit 41d9243 with 1920x1088 output, 24 frames, 15 inference steps, distilled LoRA strengths 0.25/0.5, and AttentionFunction.DEFAULT.",
+      "latest_verified_artifact_dir": "/tmp/mmgen-official-ltx23-hq-report"
+    },
+    {
       "case_id": "qwen_image_edit_2509_ti2i",
       "report_status": "official_comparable",
       "is_official_comparable": true,
