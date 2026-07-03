@@ -371,7 +371,14 @@ def _apply_sglang_condition_size(
         return
 
     config = server_args.pipeline_config
-    if "flux" in server_args.model_path.lower():
+    model_path_lower = server_args.model_path.lower()
+    # Qwen-Image edit derives low-res prompt images and high-res VAE images
+    # from the raw input.
+    preserve_raw_input_images = model_path_lower.startswith(
+        "qwen/"
+    ) or "qwen-image" in model_path_lower
+
+    if "flux" in model_path_lower:
         target_area = 1024 * 1024
         multiple_of = 16
 
@@ -396,7 +403,11 @@ def _apply_sglang_condition_size(
 
     for i, image in enumerate(input_images):
         image_size = calculate_size(image)
-        if image_size is not None and image.size != image_size:
+        if (
+            not preserve_raw_input_images
+            and image_size is not None
+            and image.size != image_size
+        ):
             input_images[i] = image.resize(image_size, Image.Resampling.LANCZOS)
     if calculated_size is None:
         return
