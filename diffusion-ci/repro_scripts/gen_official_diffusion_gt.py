@@ -40,11 +40,7 @@ from sglang.multimodal_gen.runtime.entrypoints.utils import (
     prepare_request,
 )
 from sglang.multimodal_gen.runtime.server_args import ServerArgs
-from sglang.multimodal_gen.test.server.gpu_cases import (
-    ONE_GPU_CASES,
-    ONE_GPU_MODELOPT_CASES,
-    TWO_GPU_CASES,
-)
+from sglang.multimodal_gen.test.server import gpu_cases
 from sglang.multimodal_gen.test.server.test_server_utils import (
     download_image_from_url,
     parse_dimensions,
@@ -61,9 +57,13 @@ from sglang.multimodal_gen.test.test_utils import (
 )
 
 SUITE_CASES = {
-    "1-gpu": ONE_GPU_CASES,
-    "2-gpu": TWO_GPU_CASES,
-    "1-gpu-b200": ONE_GPU_MODELOPT_CASES,
+    "1-gpu": gpu_cases.ONE_GPU_CASES,
+    "2-gpu": gpu_cases.TWO_GPU_CASES,
+    "1-gpu-b200": getattr(
+        gpu_cases,
+        "ONE_GPU_MODELOPT_CASES",
+        getattr(gpu_cases, "ONE_GPU_B200_CASES", []),
+    ),
 }
 
 UNSUPPORTED_OFFICIAL_CASES = {
