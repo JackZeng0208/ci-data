@@ -177,7 +177,7 @@
       "wrapper": "run_official_ltx23.sh",
       "official_source": "LTX official ltx-pipelines repository with official 22B checkpoint",
       "artifact_dir_used_in_report": "/tmp/mmgen-official-ltx23-hq-report",
-      "notes": "Official HQ two-stage pipeline from Lightricks/LTX-2 commit 41d9243 with 1920x1088 output, 24 frames, 15 inference steps, distilled LoRA strengths 0.25/0.5, and AttentionFunction.DEFAULT.",
+      "notes": "Official HQ two-stage TI2V pipeline from Lightricks/LTX-2 commit 41d9243 with the CI prompt and reference image, 1920x1088 output, 24 frames, 15 inference steps, distilled LoRA strengths 0.25/0.5, and AttentionFunction.DEFAULT.",
       "latest_verified_artifact_dir": "/tmp/mmgen-official-ltx23-hq-report"
     },
     {

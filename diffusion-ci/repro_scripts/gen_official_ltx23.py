@@ -39,6 +39,12 @@ IMAGE_URL = (
     "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/5f/fa/56/"
     "5ffa56c2-ea1f-7a17-6bad-192ff9b6476d/825646124206.jpg/600x600bb.jpg"
 )
+TI2V_PROMPT = (
+    "The man in the picture slowly turns his head, his expression enigmatic "
+    "and otherworldly. The camera performs a slow, cinematic dolly out, "
+    "focusing on his face. Moody lighting, neon signs glowing in the "
+    "background, shallow depth of field."
+)
 SKIP_V2A_CROSS_ATTN_FOR_VIDEO_GT = False
 
 
@@ -86,12 +92,17 @@ def parse_args():
     parser.add_argument(
         "--case-ids",
         nargs="+",
-        default=["ltx_2.3_two_stage_t2v_2gpus", "ltx_2.3_one_stage_ti2v"],
+        default=[
+            "ltx_2.3_two_stage_t2v_2gpus",
+            "ltx_2.3_one_stage_ti2v",
+            "ltx_2_3_hq_pipeline",
+        ],
     )
     parser.add_argument("--checkpoint-name", default="ltx-2.3-22b-dev.safetensors")
     parser.add_argument("--height", type=int, default=512)
     parser.add_argument("--width", type=int, default=768)
     parser.add_argument("--num-frames", type=int, default=25)
+    parser.add_argument("--hq-num-frames", type=int, default=24)
     parser.add_argument("--fps", type=int, default=24)
     parser.add_argument("--steps", type=int, default=30)
     parser.add_argument("--device", default="cuda:0")
@@ -418,38 +429,38 @@ def main() -> None:
                 torch.cuda.reset_peak_memory_stats()
             print("[ltx-official] generating ltx_2.3_two_stage_t2v_2gpus", flush=True)
             pipe = TI2VidTwoStagesPipeline(
-            checkpoint_path=checkpoint_path,
-            distilled_lora=[
-                LoraPathStrengthAndSDOps(
-                    distilled_lora_path,
-                    1.0,
-                    LTXV_LORA_COMFY_RENAMING_MAP,
-                )
-            ],
-            spatial_upsampler_path=upsampler_path,
-            gemma_root=gemma_root,
-            loras=[],
-            device=device,
-            quantization=quantization,
-        )
+                checkpoint_path=checkpoint_path,
+                distilled_lora=[
+                    LoraPathStrengthAndSDOps(
+                        distilled_lora_path,
+                        1.0,
+                        LTXV_LORA_COMFY_RENAMING_MAP,
+                    )
+                ],
+                spatial_upsampler_path=upsampler_path,
+                gemma_root=gemma_root,
+                loras=[],
+                device=device,
+                quantization=quantization,
+            )
             if not args.decode_audio:
                 pipe.audio_decoder = NoopAudioDecoder()
             tiling_config = TilingConfig.default()
             video, _audio = pipe(
-            prompt="A curious raccoon",
-            negative_prompt=DEFAULT_NEGATIVE_PROMPT,
-            seed=42,
-            height=args.height,
-            width=args.width,
-            num_frames=args.num_frames,
-            frame_rate=args.fps,
-            num_inference_steps=args.steps,
-            video_guider_params=VIDEO_GUIDER,
-            audio_guider_params=AUDIO_GUIDER,
-            images=[],
-            tiling_config=tiling_config,
-            max_batch_size=1,
-        )
+                prompt="A curious raccoon",
+                negative_prompt=DEFAULT_NEGATIVE_PROMPT,
+                seed=42,
+                height=args.height,
+                width=args.width,
+                num_frames=args.num_frames,
+                frame_rate=args.fps,
+                num_inference_steps=args.steps,
+                video_guider_params=VIDEO_GUIDER,
+                audio_guider_params=AUDIO_GUIDER,
+                images=[],
+                tiling_config=tiling_config,
+                max_batch_size=1,
+            )
             frames = collect_video_frames(video)
             saved = save_case("ltx_2.3_two_stage_t2v_2gpus", frames, fps=args.fps)
             manifest["cases"].append(
@@ -502,17 +513,24 @@ def main() -> None:
                 pipe.audio_decoder = NoopAudioDecoder()
             tiling_config = TilingConfig.default()
             video, _audio = pipe(
-                prompt="A curious raccoon",
+                prompt=TI2V_PROMPT,
                 negative_prompt=DEFAULT_NEGATIVE_PROMPT,
                 seed=42,
                 height=HQ_HEIGHT,
                 width=HQ_WIDTH,
-                num_frames=args.num_frames,
+                num_frames=args.hq_num_frames,
                 frame_rate=args.fps,
                 num_inference_steps=HQ_STEPS,
                 video_guider_params=HQ_VIDEO_GUIDER,
                 audio_guider_params=HQ_AUDIO_GUIDER,
-                images=[],
+                images=[
+                    ImageConditioningInput(
+                        path=input_image_path,
+                        frame_idx=0,
+                        strength=1.0,
+                        crf=33,
+                    )
+                ],
                 tiling_config=tiling_config,
                 max_batch_size=1,
             )
@@ -527,10 +545,11 @@ def main() -> None:
                     "saved_files": saved,
                     "num_frames": len(frames),
                     "video_chunks_number": get_video_chunks_number(
-                        args.num_frames, tiling_config
+                        args.hq_num_frames, tiling_config
                     ),
                     "height": HQ_HEIGHT,
                     "width": HQ_WIDTH,
+                    "image_path": input_image_path,
                     "num_inference_steps": HQ_STEPS,
                     "cuda_memory": cuda_memory_snapshot(device),
                 }
@@ -555,40 +574,35 @@ def main() -> None:
                 torch.cuda.reset_peak_memory_stats()
             print("[ltx-official] generating ltx_2.3_one_stage_ti2v", flush=True)
             pipe = TI2VidOneStagePipeline(
-            checkpoint_path=checkpoint_path,
-            gemma_root=gemma_root,
-            loras=[],
-            device=device,
-            quantization=quantization,
-        )
+                checkpoint_path=checkpoint_path,
+                gemma_root=gemma_root,
+                loras=[],
+                device=device,
+                quantization=quantization,
+            )
             if not args.decode_audio:
                 pipe.audio_decoder = NoopAudioDecoder()
             video, _audio = pipe(
-            prompt=(
-                "The man in the picture slowly turns his head, his expression enigmatic "
-                "and otherworldly. The camera performs a slow, cinematic dolly out, "
-                "focusing on his face. Moody lighting, neon signs glowing in the "
-                "background, shallow depth of field."
-            ),
-            negative_prompt=DEFAULT_NEGATIVE_PROMPT,
-            seed=42,
-            height=args.height,
-            width=args.width,
-            num_frames=args.num_frames,
-            frame_rate=args.fps,
-            num_inference_steps=args.steps,
-            video_guider_params=VIDEO_GUIDER,
-            audio_guider_params=AUDIO_GUIDER,
-            images=[
-                ImageConditioningInput(
-                    path=input_image_path,
-                    frame_idx=0,
-                    strength=1.0,
-                    crf=33,
-                )
-            ],
-            max_batch_size=1,
-        )
+                prompt=TI2V_PROMPT,
+                negative_prompt=DEFAULT_NEGATIVE_PROMPT,
+                seed=42,
+                height=args.height,
+                width=args.width,
+                num_frames=args.num_frames,
+                frame_rate=args.fps,
+                num_inference_steps=args.steps,
+                video_guider_params=VIDEO_GUIDER,
+                audio_guider_params=AUDIO_GUIDER,
+                images=[
+                    ImageConditioningInput(
+                        path=input_image_path,
+                        frame_idx=0,
+                        strength=1.0,
+                        crf=33,
+                    )
+                ],
+                max_batch_size=1,
+            )
             frames = collect_video_frames(video)
             saved = save_case("ltx_2.3_one_stage_ti2v", frames, fps=args.fps)
             manifest["cases"].append(
